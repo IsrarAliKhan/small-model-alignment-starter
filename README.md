@@ -1,76 +1,59 @@
-# Small-Model Alignment Starter
+# Small-Model Alignment: SFT + DPO on Qwen2.5-0.5B
 
-This branch is the student starter package for the SFT + DPO alignment assignment. It is intentionally minimal: it provides the tested environment metadata, assignment PDF, fixed evaluation/data files, and no completed training implementation.
+SFT, two from-scratch DPO runs (HH-RLHF, UltraFeedback), a TRL DPOTrainer + LoRA persona run, generation, and blind pairwise judging with Kaggle models. See `docs/assignment_manual.pdf` for the full assignment.
 
-## What Is Included
+## Layout
 
 ```text
-requirements.txt
-pyproject.toml
-submission_adapter.py
-tests/test_public_adapter_smoke.py
-tests/toy_lm.py
-docs/assignment_manual.pdf
-data/persona_lora/ramsay_style_preferences.json
-data/persona_lora/README.md
-eval_sets/hh_rlhf_eval_300_seed42.json
+submission_adapter.py        grading interface -> thin wrappers over alignment/core.py
+alignment/core.py            batching, response-only log-probs, SFT loss, DPO loss (the graded math)
+alignment/utils.py           prompt template, IO, seeding, device/autocast, checkpoint saving
+scripts/prepare_data.py      download + filter + fix train/val subsets (sft | hh | uf | alpaca)
+scripts/train_sft.py         from-scratch SFT loop (Task 3)
+scripts/train_dpo.py         from-scratch DPO loop, used for both HH and UF (Task 4)
+scripts/train_lora_dpo.py    TRL DPOTrainer + LoRA persona run (Task 5)
+scripts/generate.py          resumable batched greedy generation (Tasks 2, 6)
+scripts/build_pairs.py       blind A/B pair files with hidden model identities (Task 6)
+scripts/judge_pairwise_kaggle.py  resumable batched judging via kaggle_benchmarks (Task 7)
+scripts/plot_metrics.py      train/val curves from metrics.jsonl
+notebooks/01..06_*.ipynb     Kaggle notebooks, one per stage
+eval_sets/                   fixed eval prompts: HH synthetic (300), AlpacaEval seed 42 (300), persona style (40)
+tests/                       public smoke tests + stricter core/judge tests (offline, CPU)
 ```
 
-## Recommended Kaggle Setup
+## Kaggle workflow
 
-Use a Kaggle notebook with the `GPU T4 x2` accelerator. After cloning this repository/branch, run:
+Each notebook clones this repo, installs dependencies without touching Kaggle's PyTorch, and writes everything under `/kaggle/working/small-model-alignment-starter/outputs/<run>/`. After each notebook finishes, click **Save Version** and attach its output as an input to the next notebook. Later notebooks find earlier checkpoints automatically with a glob over `/kaggle/input`.
+
+| Notebook | Accelerator | What it does | Time |
+|---|---|---|---|
+| `01_setup_baseline_sft` | T4 x2 | env check, tests, base-model generations, SFT data + training | ~2 h |
+| `02_dpo_hh` | T4 x2 | HH-RLHF DPO from `outputs/sft/best` | ~2-2.5 h |
+| `03_dpo_uf` | T4 x2 | UltraFeedback DPO from `outputs/sft/best` | ~2-2.5 h |
+| `04_lora_persona` | T4 | TRL + LoRA on SmolLM2-360M-Instruct | ~15 min |
+| `05_generate_eval_outputs` | T4 x2 | SFT/DPO/persona generations + blind pair files | ~0.5-1 h |
+| `06_judge_kaggle` | none (utility benchmark) | Gemini judging, summaries | ~0.5 h |
+
+If the repo is private, make it public or clone it with a token from Kaggle Secrets.
+
+## Local development
 
 ```bash
-python -m pip uninstall -y -q torchao || true
-python -m pip install -q "transformers>=4.43.0,<5" "datasets>=2.18,<5" huggingface_hub accelerate tqdm pyyaml sentencepiece safetensors pytest
-python -m pip install -q -e . --no-deps
+uv venv --python 3.12 .venv && uv pip install --python .venv/bin/python torch -r requirements.txt
+uv pip install --python .venv/bin/python -e . --no-deps
+PYTHONPATH=. .venv/bin/python -m pytest -q tests
 ```
 
-This keeps Kaggle's preinstalled CUDA-compatible PyTorch intact, avoids known stale `torchao` / PEFT conflicts, and makes the local repository importable without replacing the GPU stack.
+Every script runs on CPU/MPS for tiny smoke runs, using flags such as `--max_train_examples`, `--max_steps` and `--limit`. Autocast and GradScaler are only enabled on CUDA. Judging can be tested offline with `--backend dry_run`.
 
-## What You Need To Build
+## Implementation choices (report these)
 
-You will add your own training and evaluation code on top of this starter. At minimum, your project should implement:
-
-- SFT training on 30,000 examples.
-- From-scratch DPO on HH-RLHF-style preference data.
-- From-scratch DPO on UltraFeedback-style preference data.
-- TRL `DPOTrainer` + LoRA training on the provided persona preference data.
-- Generation and DPO-vs-SFT evaluation outputs.
-- A short final report with plots and analysis.
-
-Read `docs/assignment_manual.pdf` for the full requirements and suggested workflow.
-
-## Submission Adapter And Public Tests
-
-Keep the six function signatures in `submission_adapter.py` unchanged. Implement
-each function as a small wrapper around your own SFT/DPO code. The grader uses
-this stable interface so your internal file and class organization can remain
-your choice.
-
-Run the public tests from the repository root:
-
-```bash
-python -m pip install -q pytest
-PYTHONPATH=. python -m pytest -q tests/test_public_adapter_smoke.py
-```
-
-The tests use a tiny local tokenizer and model, so they do not download a model,
-load the assignment datasets, or require a GPU. The starter adapter raises
-`NotImplementedError` until you connect it to your implementation. Passing the
-public tests checks the interface and a few basic invariants; the private grader
-also checks numerical correctness and harder edge cases described in the manual.
-
-For `compute_sft_loss`, the assignment accepts either the mean of per-example
-summed response negative log probabilities or the mean over all unmasked response
-tokens. Use one reduction consistently and document it in the report.
-
-## Fixed Files
-
-- `eval_sets/hh_rlhf_eval_300_seed42.json` is the fixed synthetic helpful/harmless evaluation set.
-- For AlpacaEval-style evaluation, use 300 prompts with seed `42` so comparisons are consistent.
-- `data/persona_lora/ramsay_style_preferences.json` is the small preference dataset for the LoRA-DPO persona task.
-
-## Saving Work On Kaggle
-
-Kaggle sessions are temporary. Write important outputs under `/kaggle/working`, save notebook versions, and archive checkpoints/generations as zip files or Kaggle output datasets before ending a session.
+- **Prompt format** (SFT, DPO, generation for Qwen models): `<|im_start|>user\n{instruction}<|im_end|>\n<|im_start|>assistant\n`, with no system turn. Each response ends with the tokenizer EOS (`<|endoftext|>`). Generation stops at EOS or `<|im_end|>`.
+- **Batching**: prompt and response are tokenized separately. EOS is appended to the response, then the full sequence is right-truncated to `max_length`, so EOS can be cut off. Padding is on the right. Labels are `-100` on prompt and padding positions. Training pads to the longest row; the adapter pads to `max_length`. The values are identical either way.
+- **SFT loss reduction**: token-level mean NLL over all unmasked response tokens in the micro-batch.
+- **Data filters**: single-turn only (UltraChat SFT: first user/assistant turn of each conversation), non-empty and distinct answers, deduplicated prompts, formatted prompt ≤ 256 tokens. UltraFeedback pairs with tied scores are dropped. Seed 42.
+- **SFT** (single GPU, cuda:0): fp32 weights, fp16 autocast + GradScaler, AdamW (wd 0.1, none on 1-D params), LR 2e-5, cosine schedule with 3% warmup, clip 1.0, batch 2 × 16, 1 epoch. `best` is chosen by validation loss.
+- **DPO**: β = 0.1, LR 1e-6 fixed, AdamW (wd 0), clip 1.0, batch 1 pair × 32. The policy is on cuda:0. The frozen reference is on cuda:1, also in fp32 under the same autocast, so step-0 rewards are exactly 0. Validation reference log-probs are cached. `best` is chosen by validation reward accuracy.
+- **LoRA persona run** (`trl==0.24.0`, because trl 1.x needs Triton for its fused log-prob kernel): LoRA r 16, alpha 32, dropout 0.05 on all attention and MLP projections, LR 5e-5 with cosine schedule and 10% warmup, β 0.1, batch 4 × 2, 3 epochs, 200 train / 20 val. TRL uses the base model with the adapter disabled as the reference.
+- **Decoding**: greedy, repetition_penalty 1.1, max_new_tokens 512. These settings are identical for every model in a comparison.
+- **Judging**: 5 pairs per request, sleep 5 s, 3 attempts per batch, resumable. Unresolved batches go to `*_failures.jsonl`; summaries go to `*_summary.json`, which includes A/B position counts.
