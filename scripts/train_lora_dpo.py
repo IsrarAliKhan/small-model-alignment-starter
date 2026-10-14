@@ -14,8 +14,13 @@ as the frozen reference.
 from __future__ import annotations
 
 import argparse
+import os
 import random
 from pathlib import Path
+
+# Single GPU: with 2 visible GPUs HF Trainer wraps the PEFT model in nn.DataParallel,
+# which crashes ("Expected all tensors to be on the same device"). Must be set before torch.
+os.environ.setdefault("CUDA_VISIBLE_DEVICES", "0")
 
 import torch
 from datasets import Dataset
