@@ -1,0 +1,14 @@
+{
+  "model": "/kaggle/input/notebooks/israrali17/03-dpo-uf/small-model-alignment-starter/outputs/dpo_uf/best",
+  "adapter": null,
+  "eval_set": "eval_sets/alpaca_eval_300_seed42.json",
+  "output": "outputs/generations/dpo_uf_alpaca.json",
+  "generator": "dpo_uf",
+  "chat_template": false,
+  "max_new_tokens": 512,
+  "batch_size": 16,
+  "repetition_penalty": 1.1,
+  "no_repeat_ngram_size": 0,
+  "limit": null,
+  "device": "cuda:0"
+}

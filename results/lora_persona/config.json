@@ -1,0 +1,19 @@
+{
+  "model": "HuggingFaceTB/SmolLM2-360M-Instruct",
+  "data": "data/persona_lora/ramsay_style_preferences.json",
+  "output_dir": "outputs/lora_persona",
+  "val_size": 20,
+  "lora_r": 16,
+  "lora_alpha": 32,
+  "lora_dropout": 0.05,
+  "target_modules": "q_proj,k_proj,v_proj,o_proj,gate_proj,up_proj,down_proj",
+  "lr": 5e-05,
+  "beta": 0.1,
+  "batch_size": 4,
+  "grad_accum": 2,
+  "epochs": 3,
+  "max_length": 512,
+  "max_prompt_length": 256,
+  "max_steps": -1,
+  "seed": 42
+}

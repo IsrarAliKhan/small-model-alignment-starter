@@ -1,0 +1,19 @@
+{
+  "n_pairs": 40,
+  "judged": 40,
+  "win": 14,
+  "loss": 26,
+  "tie": 0,
+  "unknown": 0,
+  "failure": 0,
+  "win_rate_ties_half": 0.35,
+  "win_rate_excluding_ties": 0.35,
+  "unknown_rate": 0.0,
+  "failure_rate": 0.0,
+  "verdict_A": 21,
+  "verdict_B": 19,
+  "candidate": "smollm2-360m-lora-dpo",
+  "baseline": "smollm2-360m-instruct",
+  "judge_model": "google/gemini-3.6-flash",
+  "pairs_path": "/kaggle/input/notebooks/israrali17/05-generate/small-model-alignment-starter/outputs/eval/lora_vs_base_persona_pairs.jsonl"
+}

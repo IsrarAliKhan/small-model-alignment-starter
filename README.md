@@ -30,9 +30,19 @@ Each notebook clones this repo, installs dependencies without touching Kaggle's 
 | `01_setup_baseline_sft` | T4 x2 | env check, tests, base-model generations, SFT data + training | ~2 h |
 | `02_dpo_hh` | T4 x2 | HH-RLHF DPO from `outputs/sft/best` | ~2-2.5 h |
 | `03_dpo_uf` | T4 x2 | UltraFeedback DPO from `outputs/sft/best` | ~2-2.5 h |
-| `04_lora_persona` | T4 | TRL + LoRA on SmolLM2-360M-Instruct | ~15 min |
+| `04_lora_persona` | T4 (pinned to 1 GPU) | TRL + LoRA on SmolLM2-360M-Instruct | ~15 min |
 | `05_generate_eval_outputs` | T4 x2 | SFT/DPO/persona generations + blind pair files | ~0.5-1 h |
-| `06_judge_kaggle` | none (utility benchmark) | Gemini judging, summaries | ~0.5 h |
+| `06_judge_kaggle` | none (benchmark task notebook) | Gemini judging, summaries | ~1-1.5 h |
+
+## Submitted results
+
+`results/` holds everything from the submitted runs except checkpoints (copied from each notebook's saved output):
+
+- `results/{sft,dpo_hh,dpo_uf,lora_persona}/`: `config.json` (values actually used) and `metrics.jsonl`
+- `results/plots/`: training curves
+- `results/generations/`: base, SFT, DPO and persona outputs with their generation configs
+- `results/eval/`: blind A/B pair files
+- `results/judgments/`: per-pair verdicts and `*_summary.json` (judge: `google/gemini-3.6-flash`)
 
 If the repo is private, make it public or clone it with a token from Kaggle Secrets.
 

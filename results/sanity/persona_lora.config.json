@@ -1,0 +1,14 @@
+{
+  "model": "HuggingFaceTB/SmolLM2-360M-Instruct",
+  "adapter": "outputs/lora_persona/adapter",
+  "eval_set": "eval_sets/persona_style_eval_40.json",
+  "output": "outputs/sanity/persona_lora.json",
+  "generator": "smollm2-360m-lora-dpo",
+  "chat_template": true,
+  "max_new_tokens": 200,
+  "batch_size": 16,
+  "repetition_penalty": 1.1,
+  "no_repeat_ngram_size": 0,
+  "limit": 4,
+  "device": "auto"
+}

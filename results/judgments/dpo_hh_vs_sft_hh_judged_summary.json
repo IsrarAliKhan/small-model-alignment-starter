@@ -1,0 +1,19 @@
+{
+  "n_pairs": 300,
+  "judged": 300,
+  "win": 136,
+  "loss": 138,
+  "tie": 26,
+  "unknown": 0,
+  "failure": 0,
+  "win_rate_ties_half": 0.49666666666666665,
+  "win_rate_excluding_ties": 0.49635036496350365,
+  "unknown_rate": 0.0,
+  "failure_rate": 0.0,
+  "verdict_A": 166,
+  "verdict_B": 108,
+  "candidate": "dpo_hh",
+  "baseline": "sft",
+  "judge_model": "google/gemini-3.6-flash",
+  "pairs_path": "/kaggle/input/notebooks/israrali17/05-generate/small-model-alignment-starter/outputs/eval/dpo_hh_vs_sft_hh_pairs.jsonl"
+}

@@ -1,0 +1,14 @@
+{
+  "model": "/kaggle/input/notebooks/israrali17/02-dpo-hh/small-model-alignment-starter/outputs/dpo_hh/best",
+  "adapter": null,
+  "eval_set": "eval_sets/alpaca_eval_300_seed42.json",
+  "output": "outputs/sanity/dpo_hh.json",
+  "generator": "dpo_hh",
+  "chat_template": false,
+  "max_new_tokens": 256,
+  "batch_size": 16,
+  "repetition_penalty": 1.1,
+  "no_repeat_ngram_size": 0,
+  "limit": 3,
+  "device": "auto"
+}

@@ -1,0 +1,30 @@
+[
+  {
+    "id": "persona-style-cooking-00",
+    "instruction": "I boiled my pasta in unsalted water and then rinsed it under cold water before adding the sauce. Why does it taste bland and the sauce won't stick?",
+    "output": "The reason your pasta tastes bland and the sauce doesn't stick is due to the type of pasta you're using. Pasta can be made from various types such as spaghetti, fettuccine, or linguine, each with its own texture and cooking time. For example, spaghetti has a more tender and chewy texture than fettuccine, which is firmer but still soft enough for the sauce to cling to. \n\nAdditionally, if you're not using the right type of pasta, it might affect how well the sauce sticks together. Some pasta varieties have a higher starch content that helps hold onto sauces better, while others may absorb too much liquid and become mushy.\n\nTo fix this issue, try using a different type of pasta or adjusting the ratio of pasta to sauce. You could also consider making a simple tomato sauce with some olive oil and garlic instead of relying on the sauce itself. This way, you'll get a more consistent result every time.",
+    "generator": "smollm2-360m-instruct",
+    "dataset": "persona_style_eval"
+  },
+  {
+    "id": "persona-style-cooking-01",
+    "instruction": "I put a whole frozen chicken straight into the oven at 200C without thawing it. How long until it's done?",
+    "output": "The time to cook a frozen chicken depends on several factors such as its size, thickness of the breast meat, and cooking method. Generally, if you're using a slow-cooker or a food processor, it can take around 15 minutes for most chicken breasts. However, if you're using an oven with a high temperature setting (like 200C), it might take longer. \n\nTo give you a rough estimate:\n\n1. If your chicken is about 3-4 inches thick, it should be cooked in about 15-20 minutes.\n2. For thinner chicken pieces like thighs or wings, it could take up to 20-25 minutes.\n3. If your chicken is very thin, like a breast bone, it may not even need to be cooked at all.\n\nRemember, these times are approximate and depend on various factors. Always check the internal temperature of the chicken before serving to ensure it's fully cooked",
+    "generator": "smollm2-360m-instruct",
+    "dataset": "persona_style_eval"
+  },
+  {
+    "id": "persona-style-cooking-02",
+    "instruction": "My scrambled eggs are always rubbery. I cook them on the highest heat and stir constantly for five minutes.",
+    "output": "I'm sorry to hear that your scrambled eggs are not as tender as you'd like them to be. It sounds like you're experiencing some issues with cooking time or temperature. Can you tell me more about what's causing this problem? Is it related to the type of eggs you're using, the cooking method, or perhaps something else entirely?",
+    "generator": "smollm2-360m-instruct",
+    "dataset": "persona_style_eval"
+  },
+  {
+    "id": "persona-style-cooking-03",
+    "instruction": "I crowded twelve chicken thighs into one small pan to save time and they came out pale and soggy. What went wrong?",
+    "output": "The main issue here is likely that you didn't have enough liquid in the pan for all the chicken thighs. Chicken thighs don't absorb much liquid when cooked, so if there's not enough water or broth, it can cause them to become dry and soggy. You might want to consider adding more liquid to your pan before cooking the chicken thighs.",
+    "generator": "smollm2-360m-instruct",
+    "dataset": "persona_style_eval"
+  }
+]

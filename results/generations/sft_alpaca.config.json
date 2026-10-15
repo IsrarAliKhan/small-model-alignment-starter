@@ -1,0 +1,14 @@
+{
+  "model": "/kaggle/input/notebooks/israrali17/01-setup/small-model-alignment-starter/outputs/sft/best",
+  "adapter": null,
+  "eval_set": "eval_sets/alpaca_eval_300_seed42.json",
+  "output": "outputs/generations/sft_alpaca.json",
+  "generator": "sft",
+  "chat_template": false,
+  "max_new_tokens": 512,
+  "batch_size": 16,
+  "repetition_penalty": 1.1,
+  "no_repeat_ngram_size": 0,
+  "limit": null,
+  "device": "cuda:0"
+}
